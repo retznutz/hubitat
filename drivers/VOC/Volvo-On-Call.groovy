@@ -44,6 +44,7 @@ import groovy.transform.Field
 metadata    {
     definition (name: "Volvo On Call (VOC) Driver", namespace: "filby", author: "Andrew Filby")  {
 		
+        capability "Switch"
 		capability "Refresh"
 		capability "Sensor"
         capability "Presence Sensor"
@@ -92,8 +93,10 @@ metadata    {
 		attribute "positions", "number"
 		attribute "GMaps Link", "string"
 
-		
+		command "on"
+        command "off"
         command "refresh"
+        command "start"
         command "lock"
         command "unlock"
 		command "preclimatization"
@@ -207,6 +210,23 @@ def preclimatization() {
 	postVOC("preclimatization/start")
 }
 
+
+def on(){
+    postVOC("engine/start")
+    return 1
+}
+
+
+def off(){
+    postVOC("engine/stop")
+    return 1
+}
+
+
+def start(){
+    postVOC("engine/start")   
+}
+
 def lock() {
 	postVOC("lock")
 }
@@ -245,7 +265,7 @@ def postVOC(command) {
 				"X-OS-Version": "22",
 				"Content-Type": "application/json"
 				],
-		body: """{"clientAccuracy":0,"clientLatitude":${pos.position.latitude},"clientLongitude":${pos.position.longitude}}"""
+        body: """{"runtime":15}"""
 		]
 	
 	log params
